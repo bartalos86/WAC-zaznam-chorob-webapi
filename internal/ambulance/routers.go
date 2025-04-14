@@ -71,7 +71,7 @@ type ApiHandleFunctions struct {
 
 func getRoutes(handleFunctions ApiHandleFunctions) []Route {
 	return []Route{
-		/*{
+		{
 			"CreateIllness",
 			http.MethodPost,
 			"/api/patients/:patientId/illnesses",
@@ -94,7 +94,7 @@ func getRoutes(handleFunctions ApiHandleFunctions) []Route {
 			http.MethodPatch,
 			"/api/patients/:patientId/illnesses",
 			handleFunctions.IllnessesAPI.UpdateSickLeaveEndDate,
-		},*/
+		},
 		{
 			"CreatePatient",
 			http.MethodPost,
