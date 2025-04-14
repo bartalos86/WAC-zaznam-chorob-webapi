@@ -1,0 +1,351 @@
+openapi: 3.0.0
+servers:
+  - description: API Endpoint
+    url: /api
+info:
+  description: Patient and Illness Management API
+  version: "1.0.0"
+  title: Patient and Illness Management API
+  contact:
+    email: support@example.com
+  license:
+    name: CC BY 4.0
+    url: "https://creativecommons.org/licenses/by/4.0/"
+tags:
+- name: patients
+  description: Patient management API
+- name: illnesses
+  description: Illness and sick leave management
+
+paths:
+  "/patients":
+    get:
+      tags:
+        - patients
+      summary: Get all patients
+      operationId: getPatients
+      description: Retrieves a list of all patients in the system
+      responses:
+        "200":
+          description: List of patients
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Patient"
+              examples:
+                response:
+                  $ref: "#/components/examples/PatientsListExample"
+    post:
+      tags:
+        - patients
+      summary: Create a new patient
+      operationId: createPatient
+      description: Use this method to add a new patient to the system
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Patient"
+            examples:
+              request-sample:
+                $ref: "#/components/examples/PatientExample"
+        description: Patient details to store
+        required: true
+      responses:
+        "201":
+          description: Successfully created patient
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Patient"
+              examples:
+                updated-response:
+                  $ref: "#/components/examples/PatientExample"
+        "400":
+          description: Missing mandatory properties of input object
+        "409":
+          description: Patient with the specified id already exists
+
+  "/illnesses":
+    get:
+      tags:
+        - illnesses
+      summary: Get all illnesses
+      operationId: getAllIllnesses
+      description: Retrieves a list of all illnesses in the system
+      responses:
+        "200":
+          description: List of illnesses
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Illness"
+              examples:
+                response:
+                  $ref: "#/components/examples/IllnessesListExample"
+    post:
+      tags:
+        - illnesses
+      summary: Create a new illness record
+      operationId: createIllness
+      description: Use this method to add a new illness record to the system
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Illness"
+            examples:
+              request-sample:
+                $ref: "#/components/examples/IllnessExample"
+        description: Illness details to store
+        required: true
+      responses:
+        "201":
+          description: Successfully created illness record
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Illness"
+              examples:
+                updated-response:
+                  $ref: "#/components/examples/IllnessExample"
+        "400":
+          description: Missing mandatory properties of input object
+        "409":
+          description: Illness with the specified id already exists
+
+  "/patients/{patientId}/illnesses":
+    get:
+      tags:
+        - illnesses
+      summary: Get illnesses for a specific patient
+      operationId: getPatientIllnesses
+      description: Retrieves all illness records for a specific patient
+      parameters:
+        - in: path
+          name: patientId
+          description: ID of the patient
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: List of patient's illnesses
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Illness"
+              examples:
+                response:
+                  $ref: "#/components/examples/IllnessesListExample"
+        "404":
+          description: Patient with specified ID does not exist
+
+  "/patients/{patientId}/illnesses/{illnessId}":
+    get:
+      tags:
+        - illnesses
+      summary: Get specific illness record
+      operationId: getPatientIllness
+      description: Retrieves a specific illness record for a patient
+      parameters:
+        - in: path
+          name: patientId
+          description: ID of the patient
+          required: true
+          schema:
+            type: string
+        - in: path
+          name: illnessId
+          description: ID of the illness record
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Illness record details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Illness"
+              examples:
+                response:
+                  $ref: "#/components/examples/IllnessExample"
+        "404":
+          description: Patient or illness with specified ID does not exist
+    patch:
+      tags:
+        - illnesses
+      summary: Update sick leave end date
+      operationId: updateSickLeaveEndDate
+      description: Updates the sl-until field of a specific illness record
+      parameters:
+        - in: path
+          name: patientId
+          description: ID of the patient
+          required: true
+          schema:
+            type: string
+        - in: path
+          name: illnessId
+          description: ID of the illness record
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - slUntil
+              properties:
+                slUntil:
+                  type: string
+                  format: date
+                  example: "2025-05-01"
+            examples:
+              request-sample:
+                value:
+                  slUntil: "2025-05-01"
+        description: New sick leave end date
+        required: true
+      responses:
+        "200":
+          description: Successfully updated illness record
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Illness"
+              examples:
+                updated-response:
+                  $ref: "#/components/examples/IllnessExample"
+        "400":
+          description: Missing or invalid sick leave end date
+        "404":
+          description: Patient or illness with specified ID does not exist
+    delete:
+      tags:
+        - illnesses
+      summary: Delete illness record
+      operationId: deleteIllness
+      description: Deletes a specific illness record for a patient
+      parameters:
+        - in: path
+          name: patientId
+          description: ID of the patient
+          required: true
+          schema:
+            type: string
+        - in: path
+          name: illnessId
+          description: ID of the illness record
+          required: true
+          schema:
+            type: string
+      responses:
+        "204":
+          description: Successfully deleted illness record
+        "404":
+          description: Patient or illness with specified ID does not exist
+
+components:
+  schemas:
+    Patient:
+      type: object
+      required: [id, name]
+      properties:
+        id:
+          type: string
+          example: "patient-123"
+          description: Unique identifier for the patient
+        name:
+          type: string
+          example: "John Doe"
+          description: Patient's full name
+      example:
+        $ref: "#/components/examples/PatientExample/value"
+
+    Illness:
+      type: object
+      required: [id, patientId, diagnosis, slFrom, slUntil]
+      properties:
+        id:
+          type: string
+          example: "illness-456"
+          description: Unique identifier for the illness record
+        patientId:
+          type: string
+          example: "patient-123"
+          description: ID of the patient this illness record belongs to
+        diagnosis:
+          type: string
+          example: "Influenza"
+          description: Medical diagnosis
+        slFrom:
+          type: string
+          format: date
+          example: "2025-04-10"
+          description: Start date of sick leave
+        slUntil:
+          type: string
+          format: date
+          example: "2025-04-20"
+          description: End date of sick leave
+        notes:
+          type: string
+          example: "Bed rest recommended"
+          description: Additional notes about the illness or treatment
+      example:
+        $ref: "#/components/examples/IllnessExample/value"
+
+  examples:
+    PatientExample:
+      summary: Sample patient
+      description: Example of a patient in the system
+      value:
+        id: "patient-123"
+        name: "John Doe"
+
+    PatientsListExample:
+      summary: List of patients
+      description: Example list of patients in the system
+      value:
+        - id: "patient-123"
+          name: "John Doe"
+        - id: "patient-456"
+          name: "Jane Smith"
+
+    IllnessExample:
+      summary: Sample illness record
+      description: Example of an illness record in the system
+      value:
+        id: "illness-456"
+        patientId: "patient-123"
+        diagnosis: "Influenza"
+        slFrom: "2025-04-10"
+        slUntil: "2025-04-20"
+        notes: "Bed rest recommended"
+
+    IllnessesListExample:
+      summary: List of illness records
+      description: Example list of illness records in the system
+      value:
+        - id: "illness-456"
+          patientId: "patient-123"
+          diagnosis: "Influenza"
+          slFrom: "2025-04-10"
+          slUntil: "2025-04-20"
+          notes: "Bed rest recommended"
+        - id: "illness-789"
+          patientId: "patient-123"
+          diagnosis: "Lower back pain"
+          slFrom: "2025-03-01"
+          slUntil: "2025-03-10"
+          notes: "Physical therapy recommended"
