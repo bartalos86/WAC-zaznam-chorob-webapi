@@ -15,18 +15,12 @@ type Illness struct {
 	// Unique identifier for the illness record
 	Id string `json:"id"`
 
-	// ID of the patient this illness record belongs to
-	PatientId string `json:"patientId"`
-
 	// Medical diagnosis
 	Diagnosis string `json:"diagnosis"`
 
 	// Start date of sick leave
-	SlFrom string `json:"slFrom"`
+	SlFrom string `json:"sl_from"`
 
 	// End date of sick leave
-	SlUntill string `json:"sl_untill"`
-
-	// Additional notes about the illness or treatment
-	Notes string `json:"notes,omitempty"`
+	SlUntil string `json:"sl_until"`
 }

@@ -233,7 +233,7 @@ components:
 
     Illness:
       type: object
-      required: [id, diagnosis, slFrom, sl_until]
+      required: [id, diagnosis, sl_from, sl_until]
       properties:
         id:
           type: string
@@ -243,7 +243,7 @@ components:
           type: string
           example: "Influenza"
           description: Medical diagnosis
-        slFrom:
+        sl_from:
           type: string
           format: date
           example: "2025-04-10"
@@ -253,10 +253,6 @@ components:
           format: date
           example: "2025-04-20"
           description: End date of sick leave
-        notes:
-          type: string
-          example: "Bed rest recommended"
-          description: Additional notes about the illness or treatment
       example:
         $ref: "#/components/examples/IllnessExample/value"
 
@@ -283,9 +279,8 @@ components:
       value:
         id: "illness-456"
         diagnosis: "Influenza"
-        slFrom: "2025-04-10"
+        sl_from: "2025-04-10"
         sl_until: "2025-04-20"
-        notes: "Bed rest recommended"
 
     IllnessesListExample:
       summary: List of illness records
@@ -293,11 +288,9 @@ components:
       value:
         - id: "illness-456"
           diagnosis: "Influenza"
-          slFrom: "2025-04-10"
+          sl_from: "2025-04-10"
           sl_until: "2025-04-20"
-          notes: "Bed rest recommended"
         - id: "illness-789"
           diagnosis: "Lower back pain"
-          slFrom: "2025-03-01"
+          sl_from: "2025-03-01"
           sl_until: "2025-03-10"
-          notes: "Physical therapy recommended"
