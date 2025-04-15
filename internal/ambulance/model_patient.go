@@ -19,5 +19,5 @@ type Patient struct {
 	Name string `json:"name"`
 
 	// List of patient's illnesses, initialized as empty array on creation
-	Illnesses []Illness `json:"illnesses,omitempty"`
+	Illnesses []Illness `json:"illnesses"`
 }

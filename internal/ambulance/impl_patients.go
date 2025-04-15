@@ -68,8 +68,9 @@ func (o *implPatientsAPI) CreatePatient(c *gin.Context) {
 	patientID := fmt.Sprintf("P-%d", randomNum)
 
 	patient := &Patient{
-		Name: requestBody.Name,
-		Id:   patientID,
+		Name:      requestBody.Name,
+		Id:        patientID,
+		Illnesses: []Illness{},
 	}
 
 	if err := db.CreateDocument(c.Request.Context(), requestBody.Name, patient); err != nil {
