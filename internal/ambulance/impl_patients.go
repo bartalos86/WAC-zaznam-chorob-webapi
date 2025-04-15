@@ -128,10 +128,8 @@ func (o *implPatientsAPI) GetPatients(c *gin.Context) {
 		return
 	}
 
-	// Check if a name query parameter was provided
 	name := c.Query("name")
 	if name != "" {
-		// Get a single patient by name
 		patient, err := db.FindByField(c, "name", name)
 		if err != nil {
 			if err == db_service.ErrNotFound {
@@ -157,12 +155,11 @@ func (o *implPatientsAPI) GetPatients(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{
 			"status":   "OK",
 			"message":  "Patient retrieved successfully",
-			"patients": []Patient{*patient}, // Wrap in array for consistency
+			"patients": []Patient{*patient},
 		})
 		return
 	}
 
-	// Get all patients from the database
 	patients, err := db.GetAll(c)
 	if err != nil {
 		c.JSON(
