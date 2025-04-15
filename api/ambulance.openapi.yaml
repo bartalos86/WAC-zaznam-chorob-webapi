@@ -18,25 +18,31 @@ tags:
   description: Illness and sick leave management
 
 paths:
-  "/patients":
-    get:
-      tags:
-        - patients
-      summary: Get all patients
-      operationId: getPatients
-      description: Retrieves a list of all patients in the system
-      responses:
-        "200":
-          description: List of patients
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/Patient"
-              examples:
-                response:
-                  $ref: "#/components/examples/PatientsListExample"
+  get:
+    tags:
+      - patients
+    summary: Get all patients or filter by name
+    operationId: getPatients
+    description: Retrieves a list of all patients in the system. Optionally filter by name.
+    parameters:
+      - name: name
+        in: query
+        description: Optional name to filter patients by
+        required: false
+        schema:
+          type: string
+    responses:
+      "200":
+        description: List of patients
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: "#/components/schemas/Patient"
+            examples:
+              response:
+                $ref: "#/components/examples/PatientsListExample"
     post:
       tags:
         - patients
@@ -216,7 +222,7 @@ components:
       properties:
         id:
           type: string
-          example: "patient-123"
+          example: "P-123"
           description: Unique identifier for the patient
         name:
           type: string

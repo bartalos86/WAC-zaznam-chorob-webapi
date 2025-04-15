@@ -18,9 +18,11 @@ import (
 type DbService[DocType interface{}] interface {
 	CreateDocument(ctx context.Context, id string, document *DocType) error
 	FindDocument(ctx context.Context, id string) (*DocType, error)
+	FindByField(ctx context.Context, field string, value string) (*DocType, error)
 	UpdateDocument(ctx context.Context, id string, document *DocType) error
 	DeleteDocument(ctx context.Context, id string) error
 	Disconnect(ctx context.Context) error
+	GetAll(ctx context.Context) ([]DocType, error)
 }
 
 var ErrNotFound = fmt.Errorf("document not found")
@@ -76,11 +78,11 @@ func NewMongoService[DocType interface{}](config MongoServiceConfig) DbService[D
 	}
 
 	if svc.DbName == "" {
-		svc.DbName = enviro("AMBULANCE_API_MONGODB_DATABASE", "<pfx>-ambulance-wl")
+		svc.DbName = enviro("AMBULANCE_API_MONGODB_DATABASE", "project-ambulance")
 	}
 
 	if svc.Collection == "" {
-		svc.Collection = enviro("AMBULANCE_API_MONGODB_COLLECTION", "ambulance")
+		svc.Collection = enviro("AMBULANCE_API_MONGODB_COLLECTION", "project-ambulance")
 	}
 
 	if svc.Timeout == 0 {
@@ -155,7 +157,7 @@ func (m *mongoSvc[DocType]) Disconnect(ctx context.Context) error {
 	return nil
 }
 
-func (m *mongoSvc[DocType]) CreateDocument(ctx context.Context, id string, document *DocType) error {
+func (m *mongoSvc[DocType]) CreateDocument(ctx context.Context, name string, document *DocType) error {
 	ctx, contextCancel := context.WithTimeout(ctx, m.Timeout)
 	defer contextCancel()
 	client, err := m.connect(ctx)
@@ -164,7 +166,7 @@ func (m *mongoSvc[DocType]) CreateDocument(ctx context.Context, id string, docum
 	}
 	db := client.Database(m.DbName)
 	collection := db.Collection(m.Collection)
-	result := collection.FindOne(ctx, bson.D{{Key: "id", Value: id}})
+	result := collection.FindOne(ctx, bson.D{{Key: "name", Value: name}})
 	switch result.Err() {
 	case nil: // no error means there is conflicting document
 		return ErrConflict
@@ -173,7 +175,6 @@ func (m *mongoSvc[DocType]) CreateDocument(ctx context.Context, id string, docum
 	default: // other errors - return them
 		return result.Err()
 	}
-
 	_, err = collection.InsertOne(ctx, document)
 	return err
 }
@@ -188,6 +189,30 @@ func (m *mongoSvc[DocType]) FindDocument(ctx context.Context, id string) (*DocTy
 	db := client.Database(m.DbName)
 	collection := db.Collection(m.Collection)
 	result := collection.FindOne(ctx, bson.D{{Key: "id", Value: id}})
+	switch result.Err() {
+	case nil:
+	case mongo.ErrNoDocuments:
+		return nil, ErrNotFound
+	default: // other errors - return them
+		return nil, result.Err()
+	}
+	var document *DocType
+	if err := result.Decode(&document); err != nil {
+		return nil, err
+	}
+	return document, nil
+}
+
+func (m *mongoSvc[DocType]) FindByField(ctx context.Context, field string, value string) (*DocType, error) {
+	ctx, contextCancel := context.WithTimeout(ctx, m.Timeout)
+	defer contextCancel()
+	client, err := m.connect(ctx)
+	if err != nil {
+		return nil, err
+	}
+	db := client.Database(m.DbName)
+	collection := db.Collection(m.Collection)
+	result := collection.FindOne(ctx, bson.D{{Key: field, Value: value}})
 	switch result.Err() {
 	case nil:
 	case mongo.ErrNoDocuments:
@@ -242,4 +267,34 @@ func (m *mongoSvc[DocType]) DeleteDocument(ctx context.Context, id string) error
 	}
 	_, err = collection.DeleteOne(ctx, bson.D{{Key: "id", Value: id}})
 	return err
+}
+
+func (m *mongoSvc[DocType]) GetAll(ctx context.Context) ([]DocType, error) {
+	ctx, contextCancel := context.WithTimeout(ctx, m.Timeout)
+	defer contextCancel()
+
+	client, err := m.connect(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	db := client.Database(m.DbName)
+	collection := db.Collection(m.Collection)
+
+	// Find all documents in the collection (empty filter)
+	cursor, err := collection.Find(ctx, bson.M{})
+	if err != nil {
+		return nil, err
+	}
+	defer cursor.Close(ctx)
+
+	// Create a slice to hold all documents
+	var documents []DocType
+
+	// Decode all documents into the slice
+	if err := cursor.All(ctx, &documents); err != nil {
+		return nil, err
+	}
+
+	return documents, nil
 }
