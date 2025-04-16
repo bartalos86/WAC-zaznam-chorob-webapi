@@ -16,7 +16,7 @@ import (
 )
 
 type DbService[DocType interface{}] interface {
-	CreateDocument(ctx context.Context, id string, document *DocType) error
+	CreateDocument(ctx context.Context, name string, document *DocType) error
 	FindDocument(ctx context.Context, id string) (*DocType, error)
 	FindByField(ctx context.Context, field string, value string) (*DocType, error)
 	UpdateDocument(ctx context.Context, id string, document *DocType) error

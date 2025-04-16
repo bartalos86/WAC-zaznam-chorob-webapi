@@ -1,12 +1,11 @@
 package ambulance
 
 import (
-	"fmt"
-	"math/rand"
 	"net/http"
 
 	"github.com/bartalos86/WAC-zaznam-chorob-webapi/internal/db_service"
 	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
@@ -77,7 +76,7 @@ func (i *implIlnessesAPI) CreateIllness(c *gin.Context) {
 		return
 	}
 
-	illnessID := fmt.Sprintf("I-%d", rand.Intn(90000)+10000)
+	illnessID := uuid.New().String()
 
 	newIllness := Illness{
 		Id:        illnessID,

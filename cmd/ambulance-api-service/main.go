@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"flag"
 	"log"
 	"os"
 	"strings"
@@ -10,6 +11,7 @@ import (
 	"github.com/bartalos86/WAC-zaznam-chorob-webapi/api"
 	"github.com/bartalos86/WAC-zaznam-chorob-webapi/internal/ambulance"
 	"github.com/bartalos86/WAC-zaznam-chorob-webapi/internal/db_service"
+	"github.com/bartalos86/WAC-zaznam-chorob-webapi/internal/seeder"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 )
@@ -38,6 +40,14 @@ func main() {
 	// setup context update  middleware
 	dbService := db_service.NewMongoService[ambulance.Patient](db_service.MongoServiceConfig{})
 	defer dbService.Disconnect(context.Background())
+
+	seedPtr := flag.Bool("seed", false, "Run the database seeder")
+	flag.Parse()
+
+	if *seedPtr {
+		seeder.Seed(dbService)
+	}
+
 	engine.Use(func(ctx *gin.Context) {
 		ctx.Set("db_service", dbService)
 		ctx.Next()
