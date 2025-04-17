@@ -107,5 +107,11 @@ func getRoutes(handleFunctions ApiHandleFunctions) []Route {
 			"/api/patients",
 			handleFunctions.PatientsAPI.GetPatients,
 		},
+		{
+			"DeletePatient",
+			http.MethodDelete,
+			"/api/patients",
+			handleFunctions.PatientsAPI.DeletePatient,
+		},
 	}
 }

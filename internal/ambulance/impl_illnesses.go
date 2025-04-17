@@ -202,7 +202,7 @@ func (i *implIlnessesAPI) DeleteIllness(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{
+	c.JSON(http.StatusNoContent, gin.H{
 		"status":  "OK",
 		"message": "Illness deleted successfully",
 		"patient": patient,

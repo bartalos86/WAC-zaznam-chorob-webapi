@@ -18,31 +18,32 @@ tags:
   description: Illness and sick leave management
 
 paths:
-  get:
-    tags:
-      - patients
-    summary: Get all patients or filter by name
-    operationId: getPatients
-    description: Retrieves a list of all patients in the system. Optionally filter by name.
-    parameters:
-      - name: name
-        in: query
-        description: Optional name to filter patients by
-        required: false
-        schema:
-          type: string
-    responses:
-      "200":
-        description: List of patients
-        content:
-          application/json:
-            schema:
-              type: array
-              items:
-                $ref: "#/components/schemas/Patient"
-            examples:
-              response:
-                $ref: "#/components/examples/PatientsListExample"
+  "/patients":
+    get:
+      tags:
+        - patients
+      summary: Get all patients or filter by name
+      operationId: getPatients
+      description: Retrieves a list of all patients in the system. Optionally filter by name.
+      parameters:
+        - name: name
+          in: query
+          description: Optional name to filter patients by
+          required: false
+          schema:
+            type: string
+      responses:
+        "200":
+          description: List of patients
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Patient"
+              examples:
+                response:
+                  $ref: "#/components/examples/PatientsListExample"
     post:
       tags:
         - patients
@@ -73,6 +74,22 @@ paths:
           description: Missing mandatory properties of input object
         "409":
           description: Patient with the specified name already exists
+    delete:
+      tags:
+        - patients
+      summary: Delete a patient
+      operationId: deletePatient
+      description: Use this method to delete an existing patient
+      parameters:
+        - name: name
+          in: query
+          description: The name of the patient to be deleted
+          required: true
+          schema:
+            type: string
+      responses: 
+        "204":
+          description: successfully deleted the patient
   "/patients/{patientId}/illnesses":
     get:
       tags:

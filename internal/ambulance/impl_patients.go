@@ -180,6 +180,81 @@ func (o *implPatientsAPI) GetPatients(c *gin.Context) {
 	})
 }
 
+func (o *implPatientsAPI) DeletePatient(c *gin.Context) {
+	value, exists := c.Get("db_service")
+	if !exists {
+		c.JSON(
+			http.StatusInternalServerError,
+			gin.H{
+				"status":  "Internal Server Error",
+				"message": "db not found",
+				"error":   "db not found",
+			})
+		return
+	}
+
+	db, ok := value.(db_service.DbService[Patient])
+	if !ok {
+		c.JSON(
+			http.StatusInternalServerError,
+			gin.H{
+				"status":  "Internal Server Error",
+				"message": "db context is not of required type",
+				"error":   "cannot cast db context to db_service.DbService",
+			})
+		return
+	}
+
+	name := c.Query("name")
+	if name != "" {
+		patient, err := db.FindByField(c, "name", name)
+		if err != nil {
+			if err == db_service.ErrNotFound {
+				c.JSON(
+					http.StatusNotFound,
+					gin.H{
+						"status":  "Not Found",
+						"message": "Patient not found",
+						"error":   err.Error(),
+					})
+				return
+			}
+			c.JSON(
+				http.StatusInternalServerError,
+				gin.H{
+					"status":  "Internal Server Error",
+					"message": "Failed to retrieve patient",
+					"error":   err.Error(),
+				})
+			return
+		}
+
+		err = db.DeleteDocument(c, patient.Id)
+
+		if err == nil {
+			c.JSON(http.StatusNoContent, gin.H{
+				"status":  "No Content",
+				"message": "Patient deleted",
+			})
+			return
+		}
+
+		c.JSON(
+			http.StatusInternalServerError,
+			gin.H{
+				"status":  "Internal Server Error",
+				"message": "Failed to delete patient",
+				"error":   err.Error(),
+			})
+		return
+	}
+
+	c.JSON(http.StatusBadRequest, gin.H{
+		"status":  "Bad Request",
+		"message": "Patient name not provided",
+	})
+}
+
 func PatientsApi() PatientsAPI {
 	return &implPatientsAPI{}
 }

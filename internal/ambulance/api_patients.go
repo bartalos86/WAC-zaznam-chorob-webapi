@@ -23,4 +23,7 @@ type PatientsAPI interface {
 	// GetPatients Get /api/patients
 	// Get all patients
 	GetPatients(c *gin.Context)
+
+	// DeletePatient /api/patients
+	DeletePatient(c *gin.Context)
 }
