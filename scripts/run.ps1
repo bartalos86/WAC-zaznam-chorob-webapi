@@ -29,6 +29,14 @@ switch ($command) {
             mongo down
         }
     }
+    "seed" {
+        try {
+            mongo up --detach
+            go run ${ProjectRoot}/cmd/ambulance-api-service --seed
+        } finally {
+            mongo down
+        }
+    }
     "mongo" {
         mongo up
     }

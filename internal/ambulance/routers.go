@@ -67,6 +67,8 @@ type ApiHandleFunctions struct {
 	IllnessesAPI IllnessesAPI
 	// Routes for the PatientsAPI part of the API
 	PatientsAPI PatientsAPI
+	// Routes for the PatientsAPI part of the API
+	TreatmentsAPI TreatmentsAPI
 }
 
 func getRoutes(handleFunctions ApiHandleFunctions) []Route {
@@ -112,6 +114,31 @@ func getRoutes(handleFunctions ApiHandleFunctions) []Route {
 			http.MethodDelete,
 			"/api/patients",
 			handleFunctions.PatientsAPI.DeletePatient,
+		},
+		// New treatment-related routes
+		{
+			"CreateTreatment",
+			http.MethodPost,
+			"/api/patients/:patientId/illnesses/:illnessId/treatments",
+			handleFunctions.TreatmentsAPI.CreateTreatment,
+		},
+		{
+			"GetPatientTreatments",
+			http.MethodGet,
+			"/api/patients/:patientId/illnesses/:illnessId/treatments",
+			handleFunctions.TreatmentsAPI.GetTreatments,
+		},
+		{
+			"UpdateTreatment",
+			http.MethodPatch,
+			"/api/patients/:patientId/illnesses/:illnessId/treatments/:treatmentId",
+			handleFunctions.TreatmentsAPI.UpdateTreatment,
+		},
+		{
+			"DeleteTreatment",
+			http.MethodDelete,
+			"/api/patients/:patientId/illnesses/:illnessId/treatments/:treatmentId",
+			handleFunctions.TreatmentsAPI.DeleteTreatment,
 		},
 	}
 }

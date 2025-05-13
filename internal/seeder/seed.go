@@ -13,16 +13,32 @@ import (
 func Seed(db db_service.DbService[ambulance.Patient]) {
 	ctx := context.Background()
 
-	for i := 0; i < 15; i++ {
+	for range 15 {
 		numIllnesses := rand.Intn(6) // 0–5
 
 		var illnesses []ambulance.Illness
 		for j := 0; j < numIllnesses; j++ {
+
+			numTreatments := rand.Intn(4) // 0-3
+			var treatments []ambulance.Treatment
+			for k := 0; k < numTreatments; k++ {
+
+				treatment := ambulance.Treatment{
+					Id:          uuid.New().String(),
+					Name:        faker.Word(),
+					Description: faker.Sentence(),
+					StartDate:   faker.Date(),
+					EndDate:     faker.Date(),
+				}
+				treatments = append(treatments, treatment)
+			}
+
 			illness := ambulance.Illness{
-				Id:        uuid.New().String(),
-				Diagnosis: faker.Word(),
-				SlFrom:    faker.Date(),
-				SlUntil:   faker.Date(),
+				Id:         uuid.New().String(),
+				Diagnosis:  faker.Word(),
+				SlFrom:     faker.Date(),
+				SlUntil:    faker.Date(),
+				Treatments: treatments,
 			}
 			illnesses = append(illnesses, illness)
 		}

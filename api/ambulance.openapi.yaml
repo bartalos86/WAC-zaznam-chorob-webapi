@@ -15,7 +15,7 @@ tags:
 - name: patients
   description: Patient management API
 - name: illnesses
-  description: Illness and sick leave management
+  description: Patient illness and treatment management
 
 paths:
   "/patients":
@@ -224,6 +224,157 @@ paths:
           description: Successfully deleted illness record
         "404":
           description: Patient or illness with specified ID does not exist
+  "/patients/{patientId}/illnesses/{illnessId}/treatments":
+    post:
+      tags:
+        - treatments
+      summary: Create a new treatment for an illness
+      description: Adds a new treatment to a specific illness for the given patient.
+      parameters:
+        - name: patientId
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: illnessId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+                - description
+                - start
+                - end
+              properties:
+                name:
+                  type: string
+                description:
+                  type: string
+                start:
+                  type: string
+                end:
+                  type: string
+      responses:
+        "201":
+          description: Treatment created successfully
+        "400":
+          description: Bad request
+        "404":
+          description: Illness or patient not found
+        "500":
+          description: Internal server error
+    get:
+      tags:
+        - treatments
+      summary: Get treatments for a patient's illness
+      description: Retrieves all treatments associated with a specific illness of a patient.
+      parameters:
+        - name: patientId
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: illnessId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Treatments retrieved successfully
+        "404":
+          description: Patient or illness not found
+        "500":
+          description: Internal server error
+  "/patients/{patientId}/illnesses/{illnessId}/treatments/{treatmentId}":
+    patch:
+      tags:
+        - treatments
+      summary: Update a treatment
+      description: Updates an existing treatment for a specific illness of a patient.
+      parameters:
+        - name: patientId
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: illnessId
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: treatmentId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - id
+                - name
+                - description
+                - start
+                - end
+              properties:
+                id:
+                  type: string
+                name:
+                  type: string
+                description:
+                  type: string
+                start:
+                  type: string
+                end:
+                  type: string
+      responses:
+        "200":
+          description: Treatment updated successfully
+        "400":
+          description: Bad request
+        "404":
+          description: Patient, patient's illness or patient's treatment not found
+        "500":
+          description: Internal server error
+    delete:
+      tags:
+        - treatments
+      summary: Delete a treatment
+      description: Deletes a treatment from a specific illness of a patient.
+      parameters:
+        - name: patientId
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: illnessId
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: treatmentId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "204":
+          description: Treatment deleted successfully
+        "404":
+          description: Invalid patientId, illnessId or treatmentId
+        "500":
+          description: Internal server error
 
 components:
   schemas:
@@ -270,8 +421,43 @@ components:
           format: date
           example: "2025-04-20"
           description: End date of sick leave
+        treatments:
+          type: array
+          description: List of treatments related to this illness
+          items:
+            $ref: "#/components/schemas/Treatment"
+          default: []
       example:
         $ref: "#/components/examples/IllnessExample/value"
+
+    Treatment:
+      type: object
+      required: [id, name, description, startDate, endDate]
+      properties:
+        id:
+          type: string
+          example: "treatment-001"
+          description: Unique identifier for the treatment
+        name:
+          type: string
+          example: "test1"
+          description: Name of the treatment
+        description:
+          type: string
+          example: "Prescribed antibiotics for 7 days"
+          description: Description of the treatment
+        startDate:
+          type: string
+          format: date
+          example: "2025-04-11"
+          description: Date when the treatment started
+        endDate:
+          type: string
+          format: date
+          example: "2025-04-12"
+          description: Date when the treatment ended
+      example:
+        $ref: "#/components/examples/TreatmentExample/value"
 
   examples:
     PatientExample:
@@ -298,6 +484,7 @@ components:
         diagnosis: "Influenza"
         sl_from: "2025-04-10"
         sl_until: "2025-04-20"
+        treatments: []
 
     IllnessesListExample:
       summary: List of illness records
@@ -307,7 +494,34 @@ components:
           diagnosis: "Influenza"
           sl_from: "2025-04-10"
           sl_until: "2025-04-20"
+          treatments: []
         - id: "illness-789"
           diagnosis: "Lower back pain"
           sl_from: "2025-03-01"
           sl_until: "2025-03-10"
+          treatments: []
+    
+    TreatmentExample:
+      summary: Example treatment
+      description: A sample treatment given for an illness
+      value:
+        id: "treatment-001"
+        name: "Test1"
+        description: "Prescribed antibiotics for 7 days"
+        startDate: "2025-04-11"
+        endDate: "2025-04-12"
+
+    TreatmentsListExample:
+      summary: List of treatments
+      description: Example list of treatments for an illness
+      value:
+        - id: "treatment-001"
+          name: "Test1"
+          description: "Prescribed antibiotics for 7 days"
+          startDate: "2025-04-11"
+          endDate: "2025-04-12"
+        - id: "treatment-002"
+          name: "Test2"
+          description: "Physical therapy session"
+          startDate: "2025-04-15"
+          endDate: "2025-04-16"

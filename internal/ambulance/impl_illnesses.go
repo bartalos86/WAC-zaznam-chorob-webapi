@@ -79,10 +79,11 @@ func (i *implIlnessesAPI) CreateIllness(c *gin.Context) {
 	illnessID := uuid.New().String()
 
 	newIllness := Illness{
-		Id:        illnessID,
-		Diagnosis: newIllnessRequest.Diagnosis,
-		SlFrom:    newIllnessRequest.SlFrom,
-		SlUntil:   newIllnessRequest.SlUntil,
+		Id:         illnessID,
+		Diagnosis:  newIllnessRequest.Diagnosis,
+		SlFrom:     newIllnessRequest.SlFrom,
+		SlUntil:    newIllnessRequest.SlUntil,
+		Treatments: []Treatment{},
 	}
 
 	patient.Illnesses = append(patient.Illnesses, newIllness)

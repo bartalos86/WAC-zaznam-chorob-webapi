@@ -14,6 +14,8 @@ import (
 	"github.com/bartalos86/WAC-zaznam-chorob-webapi/internal/seeder"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
 func main() {
@@ -54,10 +56,12 @@ func main() {
 	})
 	// request routings
 	handleFunctions := &ambulance.ApiHandleFunctions{
-		PatientsAPI:  ambulance.PatientsApi(),
-		IllnessesAPI: ambulance.IllnessesApi(),
+		PatientsAPI:   ambulance.PatientsApi(),
+		IllnessesAPI:  ambulance.IllnessesApi(),
+		TreatmentsAPI: ambulance.TreatmentsApi(),
 	}
 	ambulance.NewRouterWithGinEngine(engine, *handleFunctions)
 	engine.GET("/openapi", api.HandleOpenApi)
+	engine.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler, ginSwagger.URL("/openapi")))
 	engine.Run(":" + port)
 }

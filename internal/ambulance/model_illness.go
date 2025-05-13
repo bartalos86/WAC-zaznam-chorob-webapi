@@ -23,4 +23,7 @@ type Illness struct {
 
 	// End date of sick leave
 	SlUntil string `json:"sl_until"`
+
+	// List of treatments, initialized as empty array on creation
+	Treatments []Treatment `json:"treatments"`
 }
