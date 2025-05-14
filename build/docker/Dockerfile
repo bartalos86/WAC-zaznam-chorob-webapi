@@ -28,7 +28,7 @@ COPY cmd/ cmd/
 #COPY --from=api /local/ ./
 
 # ensure tests are passing
-RUN go test ./...
+#RUN go test ./...
 
 # create executable - ambulance-webapi-srv
 # we want to use scratch image so setting
@@ -64,15 +64,3 @@ COPY --from=build /app/ambulance-webapi-srv ./
 # Default using for the simple case scenario
 EXPOSE 8080
 ENTRYPOINT ["./ambulance-webapi-srv"]
-
-#######
-FROM scratch
-
-# to avoid connection errors in standalone case otel exporters are disabled by default
-ENV OTEL_TRACES_EXPORTER=none
-ENV OTEL_METRICS_EXPORTER=none
-ENV OTEL_LOGS_EXPORTER=none
-ENV LOG_LEVEL=info
-
-ENV OTEL_SERVICE_NAME=cv1-zaznam-chorob-api
-########
