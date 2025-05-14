@@ -25,7 +25,7 @@ RUN go mod download
 # copy sources - higher frequency of changes
 COPY internal/ internal/
 COPY cmd/ cmd/
-COPY --from=api /local/ ./
+#COPY --from=api /local/ ./
 
 # ensure tests are passing
 RUN go test ./...
