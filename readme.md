@@ -2,7 +2,7 @@
 ## Meno DB
 
 ```
-project-ambulance
+project-cv1-zaznam-chorob
 ```
 
 ## Ako zbehnut seeder
