@@ -64,7 +64,7 @@ spec:
         envFrom:
           - configMapRef:
               name: otel-params
-              voptional: true
+              optional: true
         env:
           - name: AMBULANCE_API_ENVIRONMENT
             value: production
