@@ -59,6 +59,7 @@ func main() {
 		PatientsAPI:   ambulance.PatientsApi(),
 		IllnessesAPI:  ambulance.IllnessesApi(),
 		TreatmentsAPI: ambulance.TreatmentsApi(),
+		MedicationsAPI: ambulance.MedicationsApi(),
 	}
 	ambulance.NewRouterWithGinEngine(engine, *handleFunctions)
 	engine.GET("/openapi", api.HandleOpenApi)

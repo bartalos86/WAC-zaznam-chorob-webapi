@@ -43,10 +43,23 @@ func Seed(db db_service.DbService[ambulance.Patient]) {
 			illnesses = append(illnesses, illness)
 		}
 
+		// Generate random medications for the patient
+		numMedications := rand.Intn(4) // 0-3
+		var medications []ambulance.Medication
+		for j := 0; j < numMedications; j++ {
+			medication := ambulance.Medication{
+				Id:          uuid.New().String(),
+				Name:        faker.Word(),
+				SideEffects: faker.Sentence(),
+			}
+			medications = append(medications, medication)
+		}
+
 		patient := ambulance.Patient{
-			Id:        uuid.New().String(),
-			Name:      faker.Name(),
-			Illnesses: illnesses,
+			Id:          uuid.New().String(),
+			Name:        faker.Name(),
+			Illnesses:   illnesses,
+			Medications: medications,
 		}
 
 		db.CreateDocument(ctx, patient.Name, &patient)

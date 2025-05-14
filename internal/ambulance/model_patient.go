@@ -20,4 +20,7 @@ type Patient struct {
 
 	// List of patient's illnesses, initialized as empty array on creation
 	Illnesses []Illness `json:"illnesses"`
+
+	// List of patient's medications, initialized as empty array on creation
+	Medications []Medication `json:"medications"`
 }

@@ -16,6 +16,10 @@ tags:
   description: Patient management API
 - name: illnesses
   description: Patient illness and treatment management
+- name: treatments
+  description: Treatment management API
+- name: medications
+  description: Patient medication management API
 
 paths:
   "/patients":
@@ -87,7 +91,7 @@ paths:
           required: true
           schema:
             type: string
-      responses: 
+      responses:
         "204":
           description: successfully deleted the patient
   "/patients/{patientId}/illnesses":
@@ -375,6 +379,135 @@ paths:
           description: Invalid patientId, illnessId or treatmentId
         "500":
           description: Internal server error
+  "/patients/{patientId}/medications":
+    get:
+      tags:
+        - medications
+      summary: Get medications for a specific patient
+      operationId: getPatientMedications
+      description: Retrieves all medication records for a specific patient
+      parameters:
+        - in: path
+          name: patientId
+          description: ID of the patient
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: List of patient's medications
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Medication"
+              examples:
+                response:
+                  $ref: "#/components/examples/MedicationsListExample"
+        "404":
+          description: Patient with specified ID does not exist
+    post:
+      tags:
+        - medications
+      summary: Create a new medication record
+      operationId: createMedication
+      description: Use this method to add a new medication record to the system
+      parameters:
+        - in: path
+          name: patientId
+          description: ID of the patient
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Medication"
+            examples:
+              request-sample:
+                $ref: "#/components/examples/MedicationExample"
+        description: Medication details to store
+        required: true
+      responses:
+        "201":
+          description: Successfully created medication record
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Medication"
+              examples:
+                updated-response:
+                  $ref: "#/components/examples/MedicationExample"
+        "400":
+          description: Missing mandatory properties of input object
+        "409":
+          description: Medication with the specified id already exists
+    delete:
+      tags:
+        - medications
+      summary: Delete medication record
+      operationId: deleteMedication
+      description: Deletes a specific medication record for a patient
+      parameters:
+        - in: path
+          name: patientId
+          description: ID of the patient
+          required: true
+          schema:
+            type: string
+        - in: query
+          name: medication_id
+          description: ID of the medication record
+          required: true
+          schema:
+            type: string
+      responses:
+        "204":
+          description: Successfully deleted medication record
+        "404":
+          description: Patient or medication with specified ID does not exist
+  "/patients/{patientId}/medications/{medicationId}":
+    patch:
+      tags:
+        - medications
+      summary: Update a medication record
+      operationId: updateMedication
+      description: Updates an existing medication record for a patient
+      parameters:
+        - name: patientId
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: medicationId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Medication"
+            examples:
+              request-sample:
+                $ref: "#/components/examples/MedicationExample"
+      responses:
+        "200":
+          description: Medication updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Medication"
+        "400":
+          description: Bad request
+        "404":
+          description: Patient or medication not found
+        "500":
+          description: Internal server error
 
 components:
   schemas:
@@ -459,6 +592,25 @@ components:
       example:
         $ref: "#/components/examples/TreatmentExample/value"
 
+    Medication:
+      type: object
+      required: [id, name, sideEffects]
+      properties:
+        id:
+          type: string
+          example: "medication-001"
+          description: Unique identifier for the medication record
+        name:
+          type: string
+          example: "Aspirin"
+          description: Name of the medication
+        sideEffects:
+          type: string
+          example: "Nausea, stomach pain, heartburn"
+          description: Potential side effects of the medication
+      example:
+        $ref: "#/components/examples/MedicationExample/value"
+
   examples:
     PatientExample:
       summary: Sample patient
@@ -500,7 +652,7 @@ components:
           sl_from: "2025-03-01"
           sl_until: "2025-03-10"
           treatments: []
-    
+
     TreatmentExample:
       summary: Example treatment
       description: A sample treatment given for an illness
@@ -525,3 +677,22 @@ components:
           description: "Physical therapy session"
           startDate: "2025-04-15"
           endDate: "2025-04-16"
+
+    MedicationExample:
+      summary: Sample medication record
+      description: Example of a medication record in the system
+      value:
+        id: "medication-001"
+        name: "Aspirin"
+        sideEffects: "Nausea, stomach pain, heartburn"
+
+    MedicationsListExample:
+      summary: List of medication records
+      description: Example list of medication records in the system
+      value:
+        - id: "medication-001"
+          name: "Aspirin"
+          sideEffects: "Nausea, stomach pain, heartburn"
+        - id: "medication-002"
+          name: "Ibuprofen"
+          sideEffects: "Upset stomach, dizziness, headache"
