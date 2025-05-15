@@ -25,6 +25,7 @@ RUN go mod download
 # copy sources - higher frequency of changes
 COPY internal/ internal/
 COPY cmd/ cmd/
+COPY api/ api/
 #COPY --from=api /local/ ./
 
 # ensure tests are passing
@@ -58,9 +59,18 @@ ENV AMBULANCE_API_MONGODB_USERNAME=root
 ENV AMBULANCE_API_MONGODB_PASSWORD=
 ENV AMBULANCE_API_MONGODB_TIMEOUT_SECONDS=5
 
+# Environment variables from the removed second stage - ADDED
+ENV OTEL_TRACES_EXPORTER=none
+ENV OTEL_METRICS_EXPORTER=none
+ENV OTEL_LOGS_EXPORTER=none
+ENV LOG_LEVEL=info
+ENV OTEL_SERVICE_NAME=cv1-zaznam-chorob-api
+
 COPY --from=build /app/ambulance-webapi-srv ./
 
 # Actual port may be changed during runtime
 # Default using for the simple case scenario
 EXPOSE 8080
 ENTRYPOINT ["./ambulance-webapi-srv"]
+
+#######

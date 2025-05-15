@@ -1,25 +1,26 @@
 openapi: 3.0.0
-servers:
-  - description: API Endpoint
-    url: /api
 info:
-  description: Patient and Illness Management API
-  version: "1.0.0"
   title: Patient and Illness Management API
+  version: "1.0.0"
+  description: Patient and Illness Management API
   contact:
     email: support@example.com
   license:
     name: CC BY 4.0
-    url: "https://creativecommons.org/licenses/by/4.0/"
+    url: https://creativecommons.org/licenses/by/4.0/
+servers:
+  - description: API Endpoint
+    url: /api
+
 tags:
-- name: patients
-  description: Patient management API
-- name: illnesses
-  description: Patient illness and treatment management
-- name: treatments
-  description: Treatment management API
-- name: medications
-  description: Patient medication management API
+  - name: patients
+    description: Patient management API
+  - name: illnesses
+    description: Patient illness and treatment management
+  - name: treatments
+    description: Treatment management API
+  - name: medications
+    description: Patient medication management API
 
 paths:
   "/patients":
@@ -55,6 +56,8 @@ paths:
       operationId: createPatient
       description: Use this method to add a new patient to the system
       requestBody:
+        description: Patient details to store
+        required: true
         content:
           application/json:
             schema:
@@ -62,8 +65,6 @@ paths:
             examples:
               request-sample:
                 $ref: "#/components/examples/PatientExample"
-        description: Patient details to store
-        required: true
       responses:
         "201":
           description: Successfully created patient
@@ -94,6 +95,7 @@ paths:
       responses:
         "204":
           description: successfully deleted the patient
+
   "/patients/{patientId}/illnesses":
     get:
       tags:
@@ -122,6 +124,7 @@ paths:
                   $ref: "#/components/examples/IllnessesListExample"
         "404":
           description: Patient with specified ID does not exist
+
     patch:
       tags:
         - illnesses
@@ -136,12 +139,17 @@ paths:
           schema:
             type: string
       requestBody:
+        description: New sick leave end date
+        required: true
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/UpdateSickLeaveRequest"
-        description: New sick leave end date
-        required: true
+              $ref: "#/components/schemas/UpdateSickLeaveEndDateRequest"
+            examples:
+              request-sample:
+                summary: New sick leave end date
+                value:
+                  sl_until: "2025-05-01"
       responses:
         "200":
           description: Successfully updated illness record
@@ -156,6 +164,7 @@ paths:
           description: Missing or invalid sick leave end date
         "404":
           description: Patient or illness with specified ID does not exist
+
     post:
       tags:
         - illnesses
@@ -170,6 +179,8 @@ paths:
           schema:
             type: string
       requestBody:
+        description: Illness details to store
+        required: true
         content:
           application/json:
             schema:
@@ -177,8 +188,6 @@ paths:
             examples:
               request-sample:
                 $ref: "#/components/examples/IllnessExample"
-        description: Illness details to store
-        required: true
       responses:
         "201":
           description: Successfully created illness record
@@ -193,6 +202,7 @@ paths:
           description: Missing mandatory properties of input object
         "409":
           description: Illness with the specified id already exists
+
     delete:
       tags:
         - illnesses
@@ -217,11 +227,13 @@ paths:
           description: Successfully deleted illness record
         "404":
           description: Patient or illness with specified ID does not exist
+
   "/patients/{patientId}/illnesses/{illnessId}/treatments":
     post:
       tags:
         - treatments
       summary: Create a new treatment for an illness
+      operationId: createTreatment
       description: Adds a new treatment to a specific illness for the given patient.
       parameters:
         - name: patientId
@@ -239,7 +251,15 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/NewTreatment"
+              $ref: "#/components/schemas/NewTreatmentRequest"
+            examples:
+              request-sample:
+                summary: Sample new treatment
+                value:
+                  name: "test1"
+                  description: "Prescribed antibiotics for 7 days"
+                  start: "2025-04-11"
+                  end: "2025-04-12"
       responses:
         "201":
           description: Treatment created successfully
@@ -249,6 +269,7 @@ paths:
           description: Illness or patient not found
         "500":
           description: Internal server error
+
     get:
       tags:
         - treatments
@@ -272,11 +293,13 @@ paths:
           description: Patient or illness not found
         "500":
           description: Internal server error
+
   "/patients/{patientId}/illnesses/{illnessId}/treatments/{treatmentId}":
     patch:
       tags:
         - treatments
       summary: Update a treatment
+      operationId: updateTreatment
       description: Updates an existing treatment for a specific illness of a patient.
       parameters:
         - name: patientId
@@ -309,10 +332,12 @@ paths:
           description: Patient, patient's illness or patient's treatment not found
         "500":
           description: Internal server error
+
     delete:
       tags:
         - treatments
       summary: Delete a treatment
+      operationId: deleteTreatment
       description: Deletes a treatment from a specific illness of a patient.
       parameters:
         - name: patientId
@@ -337,6 +362,7 @@ paths:
           description: Invalid patientId, illnessId or treatmentId
         "500":
           description: Internal server error
+
   "/patients/{patientId}/medications":
     get:
       tags:
@@ -365,6 +391,7 @@ paths:
                   $ref: "#/components/examples/MedicationsListExample"
         "404":
           description: Patient with specified ID does not exist
+
     post:
       tags:
         - medications
@@ -379,6 +406,8 @@ paths:
           schema:
             type: string
       requestBody:
+        description: Medication details to store
+        required: true
         content:
           application/json:
             schema:
@@ -386,8 +415,6 @@ paths:
             examples:
               request-sample:
                 $ref: "#/components/examples/MedicationExample"
-        description: Medication details to store
-        required: true
       responses:
         "201":
           description: Successfully created medication record
@@ -402,6 +429,7 @@ paths:
           description: Missing mandatory properties of input object
         "409":
           description: Medication with the specified id already exists
+
     delete:
       tags:
         - medications
@@ -426,6 +454,7 @@ paths:
           description: Successfully deleted medication record
         "404":
           description: Patient or medication with specified ID does not exist
+
   "/patients/{patientId}/medications/{medicationId}":
     patch:
       tags:
@@ -469,9 +498,44 @@ paths:
 
 components:
   schemas:
+    NewTreatmentRequest:
+      type: object
+      required:
+        - name
+        - description
+        - start
+        - end
+      properties:
+        name:
+          type: string
+          description: Name of the treatment
+        description:
+          type: string
+          description: Description of the treatment
+        start:
+          type: string
+          format: date
+          description: Date when the treatment started
+        end:
+          type: string
+          format: date
+          description: Date when the treatment ended
+
+    UpdateSickLeaveEndDateRequest:
+      type: object
+      required:
+        - sl_until
+      properties:
+        sl_until:
+          type: string
+          format: date
+          description: New sick leave end date
+
     Patient:
       type: object
-      required: [id, name]
+      required:
+        - id
+        - name
       properties:
         id:
           type: string
@@ -498,7 +562,11 @@ components:
 
     Illness:
       type: object
-      required: [id, diagnosis, sl_from, sl_until]
+      required:
+        - id
+        - diagnosis
+        - sl_from
+        - sl_until
       properties:
         id:
           type: string
@@ -529,7 +597,12 @@ components:
 
     Treatment:
       type: object
-      required: [id, name, description, start, end]
+      required:
+        - id
+        - name
+        - description
+        - start
+        - end
       properties:
         id:
           type: string
@@ -558,7 +631,10 @@ components:
 
     Medication:
       type: object
-      required: [id, name, sideEffects]
+      required:
+        - id
+        - name
+        - sideEffects
       properties:
         id:
           type: string
@@ -574,35 +650,6 @@ components:
           description: Potential side effects of the medication
       example:
         $ref: "#/components/examples/MedicationExample/value"
-
-    NewTreatment:
-      type: object
-      required: [name, description, start, end]
-      properties:
-        name:
-          type: string
-          description: Name of the treatment
-        description:
-          type: string
-          description: Description of the treatment
-        start:
-          type: string
-          format: date
-          description: Date when the treatment started
-        end:
-          type: string
-          format: date
-          description: Date when the treatment ended
-
-    UpdateSickLeaveRequest:
-      type: object
-      required: [sl_until]
-      properties:
-        sl_until:
-          type: string
-          format: date
-          example: "2025-05-01"
-          description: New sick leave end date
 
   examples:
     PatientExample:
@@ -651,7 +698,7 @@ components:
       description: A sample treatment given for an illness
       value:
         id: "treatment-001"
-        name: "Test1"
+        name: "test1"
         description: "Prescribed antibiotics for 7 days"
         start: "2025-04-11"
         end: "2025-04-12"
@@ -661,12 +708,12 @@ components:
       description: Example list of treatments for an illness
       value:
         - id: "treatment-001"
-          name: "Test1"
+          name: "test1"
           description: "Prescribed antibiotics for 7 days"
           start: "2025-04-11"
           end: "2025-04-12"
         - id: "treatment-002"
-          name: "Test2"
+          name: "test2"
           description: "Physical therapy session"
           start: "2025-04-15"
           end: "2025-04-16"
