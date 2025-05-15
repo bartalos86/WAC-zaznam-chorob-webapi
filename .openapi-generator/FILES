@@ -1,7 +1,10 @@
 internal/ambulance/README.md
 internal/ambulance/api_illnesses.go
+internal/ambulance/api_medications.go
 internal/ambulance/api_patients.go
+internal/ambulance/api_treatments.go
 internal/ambulance/model_illness.go
 internal/ambulance/model_patient.go
+internal/ambulance/model_treatment.go
 internal/ambulance/model_update_sick_leave_end_date_request.go
 internal/ambulance/routers.go

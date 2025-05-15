@@ -11,10 +11,11 @@
 package ambulance
 
 import (
+	"net/http"
+
 	"github.com/bartalos86/WAC-zaznam-chorob-webapi/internal/db_service"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
-	"net/http"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
@@ -22,7 +23,7 @@ type implMedicationsAPI struct {
 }
 
 // MedicationsApi creates a new instance of MedicationsAPIService
-func MedicationsApi() MedicationsAPIService {
+func MedicationsApi() MedicationsAPI {
 	return &implMedicationsAPI{}
 }
 

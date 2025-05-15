@@ -12,5 +12,6 @@ package ambulance
 
 type UpdateSickLeaveEndDateRequest struct {
 
+	// New sick leave end date
 	SlUntil string `json:"sl_until"`
 }

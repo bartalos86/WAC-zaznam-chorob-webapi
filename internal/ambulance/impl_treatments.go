@@ -68,8 +68,8 @@ func (o *implTreatmentsAPI) CreateTreatment(c *gin.Context) {
 	var requestBody struct {
 		Name        string `json:"name"`
 		Description string `json:"description"`
-		StartDate   string `json:"start"`
-		EndDate     string `json:"end"`
+		StartDate   string `json:"startDate"`
+		EndDate     string `json:"endDate"`
 	}
 
 	if err := c.BindJSON(&requestBody); err != nil {
@@ -257,8 +257,8 @@ func (o *implTreatmentsAPI) UpdateTreatment(c *gin.Context) {
 		Id          string `json:"id"`
 		Name        string `json:"name"`
 		Description string `json:"description"`
-		StartDate   string `json:"start"`
-		EndDate     string `json:"end"`
+		StartDate   string `json:"startDate"`
+		EndDate     string `json:"endDate"`
 	}
 
 	if err := c.BindJSON(&requestBody); err != nil {

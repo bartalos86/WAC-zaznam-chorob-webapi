@@ -16,14 +16,17 @@ import (
 
 type PatientsAPI interface {
 
-	// CreatePatient Post /api/patients
-	// Create a new patient
-	CreatePatient(c *gin.Context)
 
-	// GetPatients Get /api/patients
-	// Get all patients
-	GetPatients(c *gin.Context)
+    // CreatePatient Post /api/patients
+    // Create a new patient 
+     CreatePatient(c *gin.Context)
 
-	// DeletePatient /api/patients
-	DeletePatient(c *gin.Context)
+    // DeletePatient Delete /api/patients
+    // Delete a patient 
+     DeletePatient(c *gin.Context)
+
+    // GetPatients Get /api/patients
+    // Get all patients or filter by name 
+     GetPatients(c *gin.Context)
+
 }

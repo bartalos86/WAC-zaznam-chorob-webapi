@@ -16,19 +16,21 @@ import (
 
 type IllnessesAPI interface {
 
-	// CreateIllness Post /api/patients/:patientId/illnesses
-	// Create a new illness record
-	CreateIllness(c *gin.Context)
 
-	// DeleteIllness Delete /api/patients/:patientId/illnesses
-	// Delete illness record
-	DeleteIllness(c *gin.Context)
+    // CreateIllness Post /api/patients/:patientId/illnesses
+    // Create a new illness record 
+     CreateIllness(c *gin.Context)
 
-	// GetPatientIllnesses Get /api/patients/:patientId/illnesses
-	// Get illnesses for a specific patient
-	GetPatientIllnesses(c *gin.Context)
+    // DeleteIllness Delete /api/patients/:patientId/illnesses
+    // Delete illness record 
+     DeleteIllness(c *gin.Context)
 
-	// UpdateSickLeaveEndDate Patch /api/patients/:patientId/illnesses
-	// Update sick leave end date
-	UpdateSickLeaveEndDate(c *gin.Context)
+    // GetPatientIllnesses Get /api/patients/:patientId/illnesses
+    // Get illnesses for a specific patient 
+     GetPatientIllnesses(c *gin.Context)
+
+    // UpdateSickLeaveEndDate Patch /api/patients/:patientId/illnesses
+    // Update sick leave end date 
+     UpdateSickLeaveEndDate(c *gin.Context)
+
 }

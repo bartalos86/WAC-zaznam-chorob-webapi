@@ -19,13 +19,13 @@ import (
 // Route is the information for every URI.
 type Route struct {
 	// Name is the name of this Route.
-	Name string
+	Name		string
 	// Method is the string for the HTTP method. ex) GET, POST etc..
-	Method string
+	Method		string
 	// Pattern is the pattern of the URI.
-	Pattern string
+	Pattern	 	string
 	// HandlerFunc is the handler function of this route.
-	HandlerFunc gin.HandlerFunc
+	HandlerFunc	gin.HandlerFunc
 }
 
 // NewRouter returns a new router.
@@ -65,16 +65,16 @@ type ApiHandleFunctions struct {
 
 	// Routes for the IllnessesAPI part of the API
 	IllnessesAPI IllnessesAPI
+	// Routes for the MedicationsAPI part of the API
+	MedicationsAPI MedicationsAPI
 	// Routes for the PatientsAPI part of the API
 	PatientsAPI PatientsAPI
 	// Routes for the TreatmentsAPI part of the API
 	TreatmentsAPI TreatmentsAPI
-	// Routes for the MedicationsAPI part of the API
-	MedicationsAPI MedicationsAPIService
 }
 
 func getRoutes(handleFunctions ApiHandleFunctions) []Route {
-	return []Route{
+	return []Route{ 
 		{
 			"CreateIllness",
 			http.MethodPost,
@@ -100,54 +100,16 @@ func getRoutes(handleFunctions ApiHandleFunctions) []Route {
 			handleFunctions.IllnessesAPI.UpdateSickLeaveEndDate,
 		},
 		{
-			"CreatePatient",
-			http.MethodPost,
-			"/api/patients",
-			handleFunctions.PatientsAPI.CreatePatient,
-		},
-		{
-			"GetPatients",
-			http.MethodGet,
-			"/api/patients",
-			handleFunctions.PatientsAPI.GetPatients,
-		},
-		{
-			"DeletePatient",
-			http.MethodDelete,
-			"/api/patients",
-			handleFunctions.PatientsAPI.DeletePatient,
-		},
-		// Treatment-related routes
-		{
-			"CreateTreatment",
-			http.MethodPost,
-			"/api/patients/:patientId/illnesses/:illnessId/treatments",
-			handleFunctions.TreatmentsAPI.CreateTreatment,
-		},
-		{
-			"GetPatientTreatments",
-			http.MethodGet,
-			"/api/patients/:patientId/illnesses/:illnessId/treatments",
-			handleFunctions.TreatmentsAPI.GetTreatments,
-		},
-		{
-			"UpdateTreatment",
-			http.MethodPatch,
-			"/api/patients/:patientId/illnesses/:illnessId/treatments/:treatmentId",
-			handleFunctions.TreatmentsAPI.UpdateTreatment,
-		},
-		{
-			"DeleteTreatment",
-			http.MethodDelete,
-			"/api/patients/:patientId/illnesses/:illnessId/treatments/:treatmentId",
-			handleFunctions.TreatmentsAPI.DeleteTreatment,
-		},
-		// Medication-related routes
-		{
 			"CreateMedication",
 			http.MethodPost,
 			"/api/patients/:patientId/medications",
 			handleFunctions.MedicationsAPI.CreateMedication,
+		},
+		{
+			"DeleteMedication",
+			http.MethodDelete,
+			"/api/patients/:patientId/medications",
+			handleFunctions.MedicationsAPI.DeleteMedication,
 		},
 		{
 			"GetPatientMedications",
@@ -162,10 +124,46 @@ func getRoutes(handleFunctions ApiHandleFunctions) []Route {
 			handleFunctions.MedicationsAPI.UpdateMedication,
 		},
 		{
-			"DeleteMedication",
+			"CreatePatient",
+			http.MethodPost,
+			"/api/patients",
+			handleFunctions.PatientsAPI.CreatePatient,
+		},
+		{
+			"DeletePatient",
 			http.MethodDelete,
-			"/api/patients/:patientId/medications",
-			handleFunctions.MedicationsAPI.DeleteMedication,
+			"/api/patients",
+			handleFunctions.PatientsAPI.DeletePatient,
+		},
+		{
+			"GetPatients",
+			http.MethodGet,
+			"/api/patients",
+			handleFunctions.PatientsAPI.GetPatients,
+		},
+		{
+			"CreateTreatment",
+			http.MethodPost,
+			"/api/patients/:patientId/illnesses/:illnessId/treatments",
+			handleFunctions.TreatmentsAPI.CreateTreatment,
+		},
+		{
+			"DeleteTreatment",
+			http.MethodDelete,
+			"/api/patients/:patientId/illnesses/:illnessId/treatments/:treatmentId",
+			handleFunctions.TreatmentsAPI.DeleteTreatment,
+		},
+		{
+			"GetTreatments",
+			http.MethodGet,
+			"/api/patients/:patientId/illnesses/:illnessId/treatments",
+			handleFunctions.TreatmentsAPI.GetTreatments,
+		},
+		{
+			"UpdateTreatment",
+			http.MethodPatch,
+			"/api/patients/:patientId/illnesses/:illnessId/treatments/:treatmentId",
+			handleFunctions.TreatmentsAPI.UpdateTreatment,
 		},
 	}
 }

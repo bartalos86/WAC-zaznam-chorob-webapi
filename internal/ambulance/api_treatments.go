@@ -16,19 +16,21 @@ import (
 
 type TreatmentsAPI interface {
 
-	// CreateTreatment Post /api/patients/:patientId/illnesses/:illnessId/treatments
-	// Create a new treatment record
-	CreateTreatment(c *gin.Context)
 
-	// DeleteTreatment Delete /api/patients/:patientId/illnesses/:illnessId/treatments/:treatmentId
-	// Delete treatment record
-	DeleteTreatment(c *gin.Context)
+    // CreateTreatment Post /api/patients/:patientId/illnesses/:illnessId/treatments
+    // Create a new treatment for an illness 
+     CreateTreatment(c *gin.Context)
 
-	// GetPatientTreatments Get /api/patients/:patientId/illnesses/:illnessId/treatments
-	// Get treatment for a specific patient
-	GetTreatments(c *gin.Context)
+    // DeleteTreatment Delete /api/patients/:patientId/illnesses/:illnessId/treatments/:treatmentId
+    // Delete a treatment 
+     DeleteTreatment(c *gin.Context)
 
-	// UpdatePatientTreatments Patch /api/patients/:patientId/illnesses/:illnessId/treatments/:treatmentId
-	// Update treatment record
-	UpdateTreatment(c *gin.Context)
+    // GetTreatments Get /api/patients/:patientId/illnesses/:illnessId/treatments
+    // Get treatments for a patient's illness 
+     GetTreatments(c *gin.Context)
+
+    // UpdateTreatment Patch /api/patients/:patientId/illnesses/:illnessId/treatments/:treatmentId
+    // Update a treatment 
+     UpdateTreatment(c *gin.Context)
+
 }

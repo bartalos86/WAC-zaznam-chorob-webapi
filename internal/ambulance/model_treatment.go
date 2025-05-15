@@ -1,7 +1,7 @@
 /*
- * Patient Treatment Management API
+ * Patient and Illness Management API
  *
- * Patient Treatment Management API
+ * Patient and Illness Management API
  *
  * API version: 1.0.0
  * Contact: support@example.com
@@ -10,7 +10,6 @@
 
 package ambulance
 
-// Treatment represents a treatment for a patient
 type Treatment struct {
 
 	// Unique identifier for the treatment
@@ -22,9 +21,9 @@ type Treatment struct {
 	// Description of the treatment
 	Description string `json:"description"`
 
-	// StartDate of the treatment
-	StartDate string `json:"start"`
+	// Date when the treatment started
+	StartDate string `json:"startDate"`
 
-	// EndDate of the treatment
-	EndDate string `json:"end"`
+	// Date when the treatment ended
+	EndDate string `json:"endDate"`
 }

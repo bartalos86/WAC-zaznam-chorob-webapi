@@ -139,7 +139,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/UpdateSickLeaveRequest"
+              $ref: "#/components/schemas/updateSickLeaveEndDateRequest"
         description: New sick leave end date
         required: true
       responses:
@@ -222,6 +222,7 @@ paths:
       tags:
         - treatments
       summary: Create a new treatment for an illness
+      operationId: CreateTreatment
       description: Adds a new treatment to a specific illness for the given patient.
       parameters:
         - name: patientId
@@ -239,7 +240,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/NewTreatment"
+              $ref: "#/components/schemas/Treatment"
       responses:
         "201":
           description: Treatment created successfully
@@ -253,6 +254,7 @@ paths:
       tags:
         - treatments
       summary: Get treatments for a patient's illness
+      operationId: GetTreatments
       description: Retrieves all treatments associated with a specific illness of a patient.
       parameters:
         - name: patientId
@@ -277,6 +279,7 @@ paths:
       tags:
         - treatments
       summary: Update a treatment
+      operationId: UpdateTreatment
       description: Updates an existing treatment for a specific illness of a patient.
       parameters:
         - name: patientId
@@ -313,6 +316,7 @@ paths:
       tags:
         - treatments
       summary: Delete a treatment
+      operationId: DeleteTreatment
       description: Deletes a treatment from a specific illness of a patient.
       parameters:
         - name: patientId
@@ -471,7 +475,7 @@ components:
   schemas:
     Patient:
       type: object
-      required: [id, name]
+      required: [id, name, illnesses, medications]
       properties:
         id:
           type: string
@@ -498,7 +502,7 @@ components:
 
     Illness:
       type: object
-      required: [id, diagnosis, sl_from, sl_until]
+      required: [id, diagnosis, sl_from, sl_until, treatments]
       properties:
         id:
           type: string
@@ -529,7 +533,7 @@ components:
 
     Treatment:
       type: object
-      required: [id, name, description, start, end]
+      required: [id, name, description, startDate, endDate]
       properties:
         id:
           type: string
@@ -543,12 +547,12 @@ components:
           type: string
           example: "Prescribed antibiotics for 7 days"
           description: Description of the treatment
-        start:
+        startDate:
           type: string
           format: date
           example: "2025-04-11"
           description: Date when the treatment started
-        end:
+        endDate:
           type: string
           format: date
           example: "2025-04-12"
@@ -575,26 +579,7 @@ components:
       example:
         $ref: "#/components/examples/MedicationExample/value"
 
-    NewTreatment:
-      type: object
-      required: [name, description, start, end]
-      properties:
-        name:
-          type: string
-          description: Name of the treatment
-        description:
-          type: string
-          description: Description of the treatment
-        start:
-          type: string
-          format: date
-          description: Date when the treatment started
-        end:
-          type: string
-          format: date
-          description: Date when the treatment ended
-
-    UpdateSickLeaveRequest:
+    updateSickLeaveEndDateRequest:
       type: object
       required: [sl_until]
       properties:
@@ -653,8 +638,8 @@ components:
         id: "treatment-001"
         name: "Test1"
         description: "Prescribed antibiotics for 7 days"
-        start: "2025-04-11"
-        end: "2025-04-12"
+        startDate: "2025-04-11"
+        endDate: "2025-04-12"
 
     TreatmentsListExample:
       summary: List of treatments
@@ -663,13 +648,13 @@ components:
         - id: "treatment-001"
           name: "Test1"
           description: "Prescribed antibiotics for 7 days"
-          start: "2025-04-11"
-          end: "2025-04-12"
+          startDate: "2025-04-11"
+          endDate: "2025-04-12"
         - id: "treatment-002"
           name: "Test2"
           description: "Physical therapy session"
-          start: "2025-04-15"
-          end: "2025-04-16"
+          startDate: "2025-04-15"
+          endDate: "2025-04-16"
 
     MedicationExample:
       summary: Sample medication record
