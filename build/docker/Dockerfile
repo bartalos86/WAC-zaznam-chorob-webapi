@@ -1,16 +1,16 @@
 # use specific versions of images
-#FROM openapitools/openapi-generator-cli:latest AS api
+FROM openapitools/openapi-generator-cli:latest AS api
 
-#WORKDIR /local
+WORKDIR /local
 
-#COPY api api
-#COPY scripts scripts
-##COPY .openapi-generator-ignore .openapi-generator-ignore
+COPY api api
+COPY scripts scripts
+COPY .openapi-generator-ignore .openapi-generator-ignore
 
-#RUN docker-entrypoint.sh generate -c /local/scripts/generator-cfg.yaml
+RUN docker-entrypoint.sh generate -c /local/scripts/generator-cfg.yaml
 
 # not used normally but redefine entrypoint for the case of checking this stage results
-#ENTRYPOINT ["bash"]
+ENTRYPOINT ["bash"]
 
 ############################################
 
@@ -28,7 +28,7 @@ COPY cmd/ cmd/
 COPY --from=api /local/ ./
 
 # ensure tests are passing
-#RUN go test ./...
+RUN go test ./...
 
 # create executable - ambulance-webapi-srv
 # we want to use scratch image so setting
